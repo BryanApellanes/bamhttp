@@ -6,4 +6,5 @@ public class BamContext : IBamContext
     public IBamResponse BamResponse { get; set; }
     public IBamUser User { get; set; }
     public IBamSessionState SessionState { get; set; }
+    public IBamAuthorizationResult AuthorizationResult { get; set; }
 }
