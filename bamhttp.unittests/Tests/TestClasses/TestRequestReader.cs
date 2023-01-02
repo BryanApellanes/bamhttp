@@ -1,3 +1,5 @@
+using Bam.Protocol.Server;
+
 namespace Bam.Protocol.Tests;
 
 public class TestBamRequestReader : BamRequestReader

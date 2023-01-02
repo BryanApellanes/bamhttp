@@ -1,5 +1,6 @@
 using Bam.Net;
 using Bam.Net.Testing.Unit;
+using Bam.Protocol.Server;
 
 namespace Bam.Protocol.Tests;
 
@@ -16,6 +17,8 @@ public class RequestLineTests
 
         bamRequestLine.Method.ShouldBeEqualTo(HttpMethods.POST);
         bamRequestLine.RequestUri.ShouldBeEqualTo(uri);
+        
+        
         bamRequestLine.ProtocolVersion.ShouldBeEqualTo(protocolVersion);
     }
 }

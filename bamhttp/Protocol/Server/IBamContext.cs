@@ -4,15 +4,16 @@
 
 using System.Security.Principal;
 
-namespace Bam.Protocol
+namespace Bam.Protocol.Server
 {
     public interface IBamContext
     {
-        IBamRequest BamRequest { get; set; }
+        NetworkProtocols RequestProtocol { get; set; }
+        string RequestId { get; }
+        IBamRequest BamRequest { get; }
         IBamResponse BamResponse { get; set; }
         IBamUser User { get; set; }
         IBamSessionState SessionState { get; set; }
-        
-        IBamAuthorizationResult AuthorizationResult { get; set; }
+        IBamAuthorizationCalculation AuthorizationCalculation { get; set; }
     }
 }

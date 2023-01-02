@@ -1,8 +1,10 @@
+using Bam.Protocol.Server;
+
 namespace Bam.Protocol;
 
-public class BamAuthorizationResult : IBamAuthorizationResult
+public class BamAuthorizationCalculation : IBamAuthorizationCalculation
 {
-    public BamAuthorizationResult(IBamContext context, BamAccess access)
+    public BamAuthorizationCalculation(IBamContext context, BamAccess access)
     {
         this.Context = context;
         this.Access = access;

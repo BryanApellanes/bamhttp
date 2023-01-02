@@ -9,7 +9,9 @@ public class Experimental : CommandLineTool
     [ConsoleAction]
     public void Run()
     {
-        BamHttpServer bamHttpServer = new BamHttpServer();
-        
+        /*BamProtocolServer bamProtocolServer = new BamProtocolServer();
+        HttpClient client = new HttpClient();
+        HttpRequestMessage requestMessage = new HttpRequestMessage();
+        requestMessage.Headers.Set*/
     }
 }

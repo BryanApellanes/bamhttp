@@ -1,5 +1,6 @@
 using Bam.Net.Logging;
-using bamhttp.Client;
+using Bam.Client;
+using Bam.Protocol.Server;
 
 namespace Bam.Protocol;
 

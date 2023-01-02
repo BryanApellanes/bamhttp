@@ -1,21 +1,22 @@
 using Bam.Net.Logging;
+using Bam.Protocol.Server;
 using CsQuery.EquationParser.Implementation.Functions;
 
 namespace Bam.Protocol;
 
 public abstract class BamResponseProvider : IBamResponseProvider
 {
-    public BamResponseProvider(IBamAuthorizationResolver authorizationResolver)
+    public BamResponseProvider(IBamAuthorizationCalculator authorizationCalculator)
     {
-        this.AuthorizationResolver = authorizationResolver;
+        this.AuthorizationCalculator = authorizationCalculator;
     }
     
-    private  IBamAuthorizationResolver AuthorizationResolver { get; set; } 
+    private  IBamAuthorizationCalculator AuthorizationCalculator { get; set; } 
     
     public IBamResponse CreateResponse(IBamContext context)
     {
-        BamAuthorizationResult authorizationResult = AuthorizationResolver.ResolveAuthorization(context);
-        switch (authorizationResult.Access)
+        BamAuthorizationCalculation authorizationCalculation = AuthorizationCalculator.CalculateAuthorization(context);
+        switch (authorizationCalculation.Access)
         {
             case BamAccess.Read:
                 return CreateReadResponse(context);

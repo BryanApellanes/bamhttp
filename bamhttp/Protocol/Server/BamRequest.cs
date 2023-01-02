@@ -1,7 +1,7 @@
 using System.Net;
 using System.Text;
 
-namespace Bam.Protocol;
+namespace Bam.Protocol.Server;
 
 public class BamRequest : IBamRequest
 {

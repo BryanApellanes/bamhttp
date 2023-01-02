@@ -1,3 +1,5 @@
+using Bam.Protocol.Server;
+
 namespace Bam.Protocol;
 
 public interface IBamRequestReader

@@ -1,7 +1,7 @@
 using System.Text;
 using Bam.Net;
 
-namespace Bam.Protocol;
+namespace Bam.Protocol.Server;
 
 public class BamRequestReader : IBamRequestReader
 {

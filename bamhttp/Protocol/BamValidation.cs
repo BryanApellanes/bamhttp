@@ -1,6 +1,6 @@
 namespace Bam.Protocol;
 
-public class BamValidationResult
+public class BamValidation
 {
     public bool Success { get; internal set; }
     

@@ -8,6 +8,7 @@ public class BamStatusCodes
         _descriptions = new Dictionary<int, string>
         {
             { 200, "OK" },
+            { 401, "Unauthorized" },
             { 404, "NOT FOUND" }
         };
     }

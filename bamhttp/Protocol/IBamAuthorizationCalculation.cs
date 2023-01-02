@@ -1,6 +1,8 @@
+using Bam.Protocol.Server;
+
 namespace Bam.Protocol;
 
-public interface IBamAuthorizationResult
+public interface IBamAuthorizationCalculation
 {
     string[] Messages { get; }
     BamAccess Access { get; }

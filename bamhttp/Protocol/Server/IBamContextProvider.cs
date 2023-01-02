@@ -1,4 +1,4 @@
-namespace Bam.Protocol;
+namespace Bam.Protocol.Server;
 
 public interface IBamContextProvider
 {
