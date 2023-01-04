@@ -21,11 +21,11 @@ namespace Bam.Protocol.Server
         private bool _stopRequested;
         public const int DefaultTcpPort = 8413;
         public const int DefaultUdpPort = 8414;
-        public BamServer() : this(new BamProtocolServerOptions())
+        public BamServer() : this(new BamServerOptions())
         {
         }
 
-        public BamServer(BamProtocolServerOptions options)
+        public BamServer(BamServerOptions options)
         {
             Logger = options.Logger;
             TcpPort = options.TcpPort;
@@ -49,7 +49,7 @@ namespace Bam.Protocol.Server
             set => _encoding = value;
         }
         
-        protected BamProtocolServerOptions Options { get; private set; }
+        protected BamServerOptions Options { get; private set; }
 
         protected IBamCommunicationHandler CommunicationHandler => Options.GetCommunicationHandler();
 
@@ -113,16 +113,16 @@ namespace Bam.Protocol.Server
         }
 
         [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Started")]
-        public event EventHandler<BamProtocolServerEventArgs> Starting;
+        public event EventHandler<BamServerEventArgs> Starting;
 
         [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Started")]
-        public event EventHandler<BamProtocolServerEventArgs> Started;
+        public event EventHandler<BamServerEventArgs> Started;
 
         [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Stopping")]
-        public event EventHandler<BamProtocolServerEventArgs> Stopping;        
+        public event EventHandler<BamServerEventArgs> Stopping;        
         
 		[Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Stopped")]
-        public event EventHandler<BamProtocolServerEventArgs> Stopped;
+        public event EventHandler<BamServerEventArgs> Stopped;
 
         [Verbosity(LogEventType.Error, SenderMessageFormat = "LastMessage: {LastExceptionMessage}")]
         public event EventHandler StartExceptionThrown;
@@ -136,25 +136,25 @@ namespace Bam.Protocol.Server
         [Verbosity(LogEventType.Information,
             SenderMessageFormat =
                 "Client Connected: LocalEndpoint={LocalEndpoint}, RemoteEndpoint={RemoteEndpoint}")]
-        public event EventHandler<BamProtocolServerEventArgs> TcpClientConnected;
+        public event EventHandler<BamServerEventArgs> TcpClientConnected;
 
-        public event EventHandler<BamProtocolServerEventArgs> UdpDataReceived; 
+        public event EventHandler<BamServerEventArgs> UdpDataReceived; 
 
-        public event EventHandler<BamProtocolServerEventArgs> CreateContextStarted;
-        public event EventHandler<BamProtocolServerEventArgs> CreateContextComplete; 
-        public event EventHandler<BamProtocolServerEventArgs> ResolveUserStarted;
-        public event EventHandler<BamProtocolServerEventArgs> ResolveUserComplete;
-        public event EventHandler<BamProtocolServerEventArgs> AuthorizeRequestStarted;
-        public event EventHandler<BamProtocolServerEventArgs> AuthorizeRequestComplete;
-        public event EventHandler<BamProtocolServerEventArgs> ResolveSessionStateStarted;
-        public event EventHandler<BamProtocolServerEventArgs> ResolveSessionStateComplete;
+        public event EventHandler<BamServerEventArgs> CreateContextStarted;
+        public event EventHandler<BamServerEventArgs> CreateContextComplete; 
+        public event EventHandler<BamServerEventArgs> ResolveUserStarted;
+        public event EventHandler<BamServerEventArgs> ResolveUserComplete;
+        public event EventHandler<BamServerEventArgs> AuthorizeRequestStarted;
+        public event EventHandler<BamServerEventArgs> AuthorizeRequestComplete;
+        public event EventHandler<BamServerEventArgs> ResolveSessionStateStarted;
+        public event EventHandler<BamServerEventArgs> ResolveSessionStateComplete;
 
-        public event EventHandler<BamProtocolServerEventArgs> CreateResponseStarted;
-        public event EventHandler<BamProtocolServerEventArgs> CreateResponseComplete;
+        public event EventHandler<BamServerEventArgs> CreateResponseStarted;
+        public event EventHandler<BamServerEventArgs> CreateResponseComplete;
 
-        public BamProtocolServerInfo GetInfo()
+        public BamServerInfo GetInfo()
         {
-            BamProtocolServerInfo info = new BamProtocolServerInfo();
+            BamServerInfo info = new BamServerInfo();
             info.CopyProperties(this);
             return info;
         }
@@ -213,24 +213,24 @@ namespace Bam.Protocol.Server
                 {
                     string requestId = Cuid.Generate();
                     MemoryStream stream = new MemoryStream(data);
-                    FireEvent(CreateContextStarted, new BamProtocolServerEventArgs());
+                    FireEvent(CreateContextStarted, new BamServerEventArgs());
                         
                     IBamContext context = ContextProvider.CreateContext(stream, requestId);
                     context.RequestProtocol = NetworkProtocols.Udp;
-                    FireEvent(ResolveUserStarted, new BamProtocolServerEventArgs(context));
+                    FireEvent(ResolveUserStarted, new BamServerEventArgs(context));
                     context.User = UserResolver.ResolveUser(context.BamRequest);
-                    FireEvent(ResolveUserComplete, new BamProtocolServerEventArgs(context));
-                    FireEvent(AuthorizeRequestStarted, new BamProtocolServerEventArgs(context));
+                    FireEvent(ResolveUserComplete, new BamServerEventArgs(context));
+                    FireEvent(AuthorizeRequestStarted, new BamServerEventArgs(context));
                     context.AuthorizationCalculation = AuthorizationCalculator.CalculateAuthorization(context);
-                    FireEvent(AuthorizeRequestComplete, new BamProtocolServerEventArgs(context));
-                    FireEvent(ResolveSessionStateStarted, new BamProtocolServerEventArgs(context));
+                    FireEvent(AuthorizeRequestComplete, new BamServerEventArgs(context));
+                    FireEvent(ResolveSessionStateStarted, new BamServerEventArgs(context));
                     context.SessionState = SessionStateProvider.GetSession(context);
-                    FireEvent(ResolveSessionStateComplete, new BamProtocolServerEventArgs(context));
-                    FireEvent(CreateResponseStarted, new BamProtocolServerEventArgs(context));
+                    FireEvent(ResolveSessionStateComplete, new BamServerEventArgs(context));
+                    FireEvent(CreateResponseStarted, new BamServerEventArgs(context));
                     context.BamResponse = ResponseProvider.CreateResponse(context);
-                    FireEvent(CreateResponseComplete, new BamProtocolServerEventArgs(context));
+                    FireEvent(CreateResponseComplete, new BamServerEventArgs(context));
                         
-                    FireEvent(CreateContextComplete, new BamProtocolServerEventArgs(context));
+                    FireEvent(CreateContextComplete, new BamServerEventArgs(context));
                 });
             }
         }
@@ -245,7 +245,7 @@ namespace Bam.Protocol.Server
                     string requestId = Cuid.Generate();
                     try
                     {
-                        FireEvent(TcpClientConnected, new BamProtocolServerEventArgs(client));
+                        FireEvent(TcpClientConnected, new BamServerEventArgs(client));
                         Logger.Info("Tcp Client Connected (CorrelationId={0}): LocalEndpoint={1}, RemoteEndpoint={2}", requestId, client.Client.LocalEndPoint.ToString(), client.Client.RemoteEndPoint.ToString());
                         HandleTcpRequest(client, requestId);
                     }
@@ -267,23 +267,23 @@ namespace Bam.Protocol.Server
                     if (retryCount > 0)
                     {
                         NetworkStream stream = client.GetStream();
-                        FireEvent(CreateContextStarted, new BamProtocolServerEventArgs(client));
+                        FireEvent(CreateContextStarted, new BamServerEventArgs(client));
                         
                         IBamContext context = ContextProvider.CreateContext(stream, requestId);
                         context.RequestProtocol = NetworkProtocols.Tcp;
-                        FireEvent(ResolveUserStarted, new BamProtocolServerEventArgs(client, context));
+                        FireEvent(ResolveUserStarted, new BamServerEventArgs(client, context));
                         context.User = UserResolver.ResolveUser(context.BamRequest);
-                        FireEvent(ResolveUserComplete, new BamProtocolServerEventArgs(client, context));
-                        FireEvent(AuthorizeRequestStarted, new BamProtocolServerEventArgs(client, context));
+                        FireEvent(ResolveUserComplete, new BamServerEventArgs(client, context));
+                        FireEvent(AuthorizeRequestStarted, new BamServerEventArgs(client, context));
                         context.AuthorizationCalculation = AuthorizationCalculator.CalculateAuthorization(context);
-                        FireEvent(AuthorizeRequestComplete, new BamProtocolServerEventArgs(client, context));
-                        FireEvent(ResolveSessionStateStarted, new BamProtocolServerEventArgs(client, context));
+                        FireEvent(AuthorizeRequestComplete, new BamServerEventArgs(client, context));
+                        FireEvent(ResolveSessionStateStarted, new BamServerEventArgs(client, context));
                         context.SessionState = SessionStateProvider.GetSession(context);
-                        FireEvent(ResolveSessionStateComplete, new BamProtocolServerEventArgs(client, context));
-                        FireEvent(CreateResponseStarted, new BamProtocolServerEventArgs(client, context));
+                        FireEvent(ResolveSessionStateComplete, new BamServerEventArgs(client, context));
+                        FireEvent(CreateResponseStarted, new BamServerEventArgs(client, context));
                         context.BamResponse = ResponseProvider.CreateResponse(context);
-                        FireEvent(CreateResponseComplete, new BamProtocolServerEventArgs(client, context));
-                        FireEvent(CreateContextComplete, new BamProtocolServerEventArgs(client, context));
+                        FireEvent(CreateResponseComplete, new BamServerEventArgs(client, context));
+                        FireEvent(CreateContextComplete, new BamServerEventArgs(client, context));
                     }
                 }
                 catch (Exception ex)

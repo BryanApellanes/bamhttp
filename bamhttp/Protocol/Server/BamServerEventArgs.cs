@@ -3,18 +3,18 @@ using Bam.Net;
 
 namespace Bam.Protocol.Server;
 
-public class BamProtocolServerEventArgs : EventArgs
+public class BamServerEventArgs : EventArgs
 {
-    public BamProtocolServerEventArgs()
+    public BamServerEventArgs()
     {
     }
 
-    public BamProtocolServerEventArgs(IBamContext context)
+    public BamServerEventArgs(IBamContext context)
     {
         this.Context = context;
     }
     
-    public BamProtocolServerEventArgs(TcpClient client, IBamContext context = null)
+    public BamServerEventArgs(TcpClient client, IBamContext context = null)
     {
         this.LocalEndpoint = client?.Client?.LocalEndPoint?.ToString();
         this.RemoteEndpoint = client?.Client?.RemoteEndPoint?.ToString();

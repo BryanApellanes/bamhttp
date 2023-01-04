@@ -5,23 +5,23 @@ using Bam.Net.Services;
 
 namespace Bam.Protocol.Server;
 
-public class BamProtocolServerBuilder
+public class BamServerBuilder
 {
     private readonly BamServerEventHandlers _serverEventHandlers;
     private readonly BamRequestEventHandlers _requestEventHandlers;
-    private readonly BamProtocolServerOptions _options;
+    private readonly BamServerOptions _options;
     private ApplicationServiceRegistry _applicationServiceRegistry;
-    public BamProtocolServerBuilder()
+    public BamServerBuilder()
     {
         _serverEventHandlers = new BamServerEventHandlers();
         _requestEventHandlers = new BamRequestEventHandlers();
-        _options = new BamProtocolServerOptions();
+        _options = new BamServerOptions();
         _applicationServiceRegistry = ApplicationServiceRegistry.ForProcess();
     }
 
-    public BamProtocolServerBuilder(ApplicationServiceRegistry applicationServiceRegistry)
+    public BamServerBuilder(ApplicationServiceRegistry applicationServiceRegistry)
     {
-        _options = new BamProtocolServerOptions();
+        _options = new BamServerOptions();
         _applicationServiceRegistry = applicationServiceRegistry;
     }
 
@@ -30,157 +30,157 @@ public class BamProtocolServerBuilder
         return _options.TcpPort;
     }
     
-    public BamProtocolServerBuilder TcpPort(int port)
+    public BamServerBuilder TcpPort(int port)
     {
         _options.TcpPort = port;
         return this;
     }
 
-    public BamProtocolServerBuilder UdpPort(int port)
+    public BamServerBuilder UdpPort(int port)
     {
         _options.UdpPort = port;
         return this;
     }
 
-    public BamProtocolServerBuilder TcpIPAddress(string ipAddress)
+    public BamServerBuilder TcpIPAddress(string ipAddress)
     {
         _options.TcpIPAddress = IPAddress.Parse(ipAddress);
         return this;
     }
 
-    public BamProtocolServerBuilder UdpIPAddress(string ipAddress)
+    public BamServerBuilder UdpIPAddress(string ipAddress)
     {
         _options.UdpIPAddress = IPAddress.Parse(ipAddress);
         return this;
     }
     
-    public BamProtocolServerBuilder TcpIPAddress(IPAddress ipAddress)
+    public BamServerBuilder TcpIPAddress(IPAddress ipAddress)
     {
         _options.TcpIPAddress = ipAddress;
         return this;
     }
 
-    public BamProtocolServerBuilder UdpIPAddress(IPAddress ipAddress)
+    public BamServerBuilder UdpIPAddress(IPAddress ipAddress)
     {
         _options.UdpIPAddress = ipAddress;
         return this;
     }
 
-    public BamProtocolServerBuilder Name(string name)
+    public BamServerBuilder Name(string name)
     {
         _options.Name = name;
         return this;
     }
 
-    public BamProtocolServerBuilder HostBindings(params HostBinding[] hostBindings)
+    public BamServerBuilder HostBindings(params HostBinding[] hostBindings)
     {
         _options.HostBindings.AddRange(hostBindings.Select(hb => new BamHostBinding(this, hb)));
         return this;
     }
     
-    public BamProtocolServerBuilder ComponentRegistry(ApplicationServiceRegistry componentRegistry)
+    public BamServerBuilder ComponentRegistry(ApplicationServiceRegistry componentRegistry)
     {
         _applicationServiceRegistry = componentRegistry;
         return this;
     }
 
-    public BamProtocolServerBuilder Use<I, T>(T instance)
+    public BamServerBuilder Use<I, T>(T instance)
     {
         For<I>().Use(instance);
         return this;
     }
 
-    public BamProtocolServerBuilder OnStarting(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnStarting(EventHandler<BamServerEventArgs> handler)
     {
         this._serverEventHandlers.StartingHandlers.Add(new BamEventListener(nameof(BamServer.Starting), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnStarted(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnStarted(EventHandler<BamServerEventArgs> handler)
     {
         this._serverEventHandlers.StartedHandlers.Add(new BamEventListener(nameof(BamServer.Started), handler));
         return this;
     }
 
-    public BamProtocolServerBuilder OnTcpClientConnected(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnTcpClientConnected(EventHandler<BamServerEventArgs> handler)
     {
         this._serverEventHandlers.TcpClientConnectedHandlers.Add(new BamEventListener(nameof(BamServer.TcpClientConnected), handler));
         return this;
     }
 
-    public BamProtocolServerBuilder OnUdpDataReceived(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnUdpDataReceived(EventHandler<BamServerEventArgs> handler)
     {
         this._serverEventHandlers.UdpDataReceivedHandlers.Add(new BamEventListener(nameof(BamServer.UdpDataReceived), handler));
         return this;
     }
 
-    public BamProtocolServerBuilder OnStopping(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnStopping(EventHandler<BamServerEventArgs> handler)
     {
         this._serverEventHandlers.StoppingHandlers.Add(new BamEventListener(nameof(BamServer.Stopping), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnStopped(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnStopped(EventHandler<BamServerEventArgs> handler)
     {
         this._serverEventHandlers.StoppedHandlers.Add(new BamEventListener(nameof(BamServer.Stopped), handler));
         return this;
     }
 
-    public BamProtocolServerBuilder OnCreateContextStarted(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnCreateContextStarted(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.CreateContextStartedHandlers.Add(new BamEventListener(nameof(BamServer.CreateContextStarted), handler));
         return this;
     }
 
-    public BamProtocolServerBuilder OnCreateContextComplete(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnCreateContextComplete(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.CreateContextCompleteHandlers.Add(new BamEventListener(nameof(BamServer.CreateContextComplete), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnResolveUserStarted(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnResolveUserStarted(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.ResolveUserStartedHandlers.Add(new BamEventListener(nameof(BamServer.ResolveUserStarted), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnResolveUserComplete(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnResolveUserComplete(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.ResolveUserCompleteHandlers.Add(new BamEventListener(nameof(BamServer.ResolveUserComplete), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnAuthorizeRequestStarted(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnAuthorizeRequestStarted(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.AuthorizeRequestStartedHandlers.Add(new BamEventListener(nameof(BamServer.AuthorizeRequestStarted), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnAuthorizeRequestComplete(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnAuthorizeRequestComplete(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.AuthorizeRequestCompleteHandlers.Add(new BamEventListener(nameof(BamServer.AuthorizeRequestComplete), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnResolveSessionStateStarted(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnResolveSessionStateStarted(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.ResolveSessionStateStartedHandlers.Add(new BamEventListener(nameof(BamServer.ResolveSessionStateStarted), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnResolveSessionStateComplete(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnResolveSessionStateComplete(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.ResolveSessionStateCompleteHandlers.Add(new BamEventListener(nameof(BamServer.ResolveSessionStateComplete), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnCreateResponseStarted(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnCreateResponseStarted(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.CreateResponseStartedHandlers.Add(new BamEventListener(nameof(BamServer.CreateResponseStarted), handler));
         return this;
     }
     
-    public BamProtocolServerBuilder OnCreateResponseComplete(EventHandler<BamProtocolServerEventArgs> handler)
+    public BamServerBuilder OnCreateResponseComplete(EventHandler<BamServerEventArgs> handler)
     {
         this._requestEventHandlers.CreateResponseCompleteHandlers.Add(new BamEventListener(nameof(BamServer.CreateResponseComplete), handler));
         return this;

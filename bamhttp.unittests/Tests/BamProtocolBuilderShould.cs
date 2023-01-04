@@ -18,7 +18,7 @@ public class BamProtocolBuilderShould
         string tcpIpAddress = "10.0.0.10";
         string udpIpAddress = "10.0.0.11";
         string serverName = "Test Server Name: ".RandomLetters(8);
-        BamServer server = new BamProtocolServerBuilder()
+        BamServer server = new BamServerBuilder()
             .TcpPort(testTcpPort)
             .UdpPort(testUdpPort)
             .Name(serverName)
@@ -27,7 +27,7 @@ public class BamProtocolBuilderShould
             .HostBindings(new HostBinding(testHost1), new HostBinding(testHost2))
             .Build();
 
-        BamProtocolServerInfo info = server.GetInfo();
+        BamServerInfo info = server.GetInfo();
         info.Name.ShouldBeEqualTo(serverName);
         info.TcpPort.ShouldBeEqualTo(testTcpPort);
         info.UdpPort.ShouldBeEqualTo(testUdpPort);

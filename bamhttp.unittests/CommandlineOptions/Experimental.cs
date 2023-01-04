@@ -11,7 +11,7 @@ public class Experimental : CommandLineTool
     [ConsoleAction]
     public void Run()
     {
-        BamProtocolServerBuilder builder = new BamProtocolServerBuilder();
+        BamServerBuilder builder = new BamServerBuilder();
         /*BamProtocolServer bamProtocolServer = new BamProtocolServer();
         BamClient client = new BamClient()
         HttpRequestMessage requestMessage = new HttpRequestMessage();

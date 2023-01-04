@@ -7,9 +7,9 @@ using Bam.Net.Services;
 
 namespace Bam.Protocol.Server;
 
-public class BamProtocolServerOptions
+public class BamServerOptions
 {
-    public BamProtocolServerOptions()
+    public BamServerOptions()
     {
         this.Logger = Log.Default;
         this.TcpPort = BamServer.DefaultTcpPort;
@@ -22,7 +22,7 @@ public class BamProtocolServerOptions
         this.Initialize();
     }
 
-    public BamProtocolServerOptions(ApplicationServiceRegistry componentRegistry)
+    public BamServerOptions(ApplicationServiceRegistry componentRegistry)
     {
         this.Logger = Log.Default;
         this.TcpPort = BamServer.DefaultTcpPort;

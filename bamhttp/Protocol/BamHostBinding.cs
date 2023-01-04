@@ -10,7 +10,7 @@ public class BamHostBinding : HostBinding
         Protocol = "bam";
     }
 
-    public BamHostBinding(BamProtocolServerBuilder builder, HostBinding hostBinding)
+    public BamHostBinding(BamServerBuilder builder, HostBinding hostBinding)
     {
         Protocol = "bam";
         Port = builder.TcpPort();

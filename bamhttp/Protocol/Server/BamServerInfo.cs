@@ -3,7 +3,7 @@ using Bam.Net.Server;
 
 namespace Bam.Protocol.Server;
 
-public class BamProtocolServerInfo
+public class BamServerInfo
 {
     public string Name { get; set; }
     public int TcpPort { get; internal set; }
