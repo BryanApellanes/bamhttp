@@ -8,6 +8,8 @@ using System.Net;
 using Bam.Net.Logging;
 using Bam.Net.Configuration;
 using Bam.Net;
+using Bam.Net.CoreServices.ApplicationRegistration.Data;
+using Bam.Net.Server;
 using Bam.Net.Server.Streaming;
 using DNS.Protocol.ResourceRecords;
 using Google.Protobuf.WellKnownTypes;
@@ -29,8 +31,10 @@ namespace Bam.Protocol.Server
             TcpPort = options.TcpPort;
             UdpPort = options.UdpPort;
             Name = options.Name;
+            HostBindings = new HashSet<HostBinding>(options.HostBindings.Select(hb=> new HostBinding(hb.HostName, TcpPort)));
             Options = options;
             Started += (o, a) => Subscribe(Logger);
+            Options.SubscribeEventHandlers(this);
         }
         
         Encoding _encoding;
@@ -49,14 +53,22 @@ namespace Bam.Protocol.Server
 
         protected IBamCommunicationHandler CommunicationHandler => Options.GetCommunicationHandler();
 
+        protected ITcpIPAddressProvider TcpIPAddressProvider => CommunicationHandler.TcpIPAddressProvider;
+        protected IUdpIPAddressProvider UdpIPAddressProvider => CommunicationHandler.UdpIPAddressProvider;
         protected IBamContextProvider ContextProvider => CommunicationHandler.ContextProvider;
         protected IBamResponseProvider ResponseProvider => CommunicationHandler.ResponseProvider;
         protected IBamUserResolver UserResolver => CommunicationHandler.UserResolver;
         protected IBamSessionStateProvider SessionStateProvider => CommunicationHandler.SessionStateProvider;
         protected IBamAuthorizationCalculator AuthorizationCalculator => CommunicationHandler.AuthorizationCalculator;
         protected IBamRequestProcessor RequestProcessor => CommunicationHandler.RequestProcessor;
+        
+        /// <summary>
+        /// Gets or sets the name of this server to aide in identifying the process in logs.
+        /// </summary>
         public string Name { get; set; }
 
+        public HashSet<HostBinding> HostBindings { get; }
+        
         /// <summary>
         /// Gets or sets the size of the buffer to use when parsing requests.  This value
         /// determines the size of the read buffers when reading requests.
@@ -73,6 +85,16 @@ namespace Bam.Protocol.Server
             set;
         }
 
+        public IPAddress TcpIPAddress
+        {
+            get => TcpIPAddressProvider.GetTcpIPAddress();
+        }
+
+        public IPAddress UdpIPAddress
+        {
+            get => UdpIPAddressProvider.GetUdpIPAddress();
+        }
+        
         public int UdpPort
         {
             get;
@@ -90,29 +112,33 @@ namespace Bam.Protocol.Server
             set;
         }
 
-        [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "\r\nBamHttpServer={Name};Port={Port};Started")]
+        [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Started")]
         public event EventHandler<BamProtocolServerEventArgs> Starting;
 
-        [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "\r\nBamHttpServer={Name};Port={Port};Started")]
+        [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Started")]
         public event EventHandler<BamProtocolServerEventArgs> Started;
 
-
-		[Verbosity(VerbosityLevel.Information, SenderMessageFormat = "\r\nBamHttpServer={Name};Port={Port};Stopped")]
+        [Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Stopping")]
+        public event EventHandler<BamProtocolServerEventArgs> Stopping;        
+        
+		[Verbosity(VerbosityLevel.Information, SenderMessageFormat = "BamHttpServer={Name};Port={Port};Stopped")]
         public event EventHandler<BamProtocolServerEventArgs> Stopped;
 
-        [Verbosity(LogEventType.Error, SenderMessageFormat = "\r\nLastMessage: {LastExceptionMessage}")]
+        [Verbosity(LogEventType.Error, SenderMessageFormat = "LastMessage: {LastExceptionMessage}")]
         public event EventHandler StartExceptionThrown;
 
-        [Verbosity(LogEventType.Error, SenderMessageFormat = "\r\nLastMessage: {LastExceptionMessage}")]
+        [Verbosity(LogEventType.Error, SenderMessageFormat = "LastMessage: {LastExceptionMessage}")]
         public event EventHandler RequestExceptionThrown;
         
-        [Verbosity(LogEventType.Error, SenderMessageFormat = "\r\nLastMessage: {LastExceptionMessage}")]
+        [Verbosity(LogEventType.Error, SenderMessageFormat = "LastMessage: {LastExceptionMessage}")]
         public event EventHandler InitializationException;
 
         [Verbosity(LogEventType.Information,
             SenderMessageFormat =
-                "\r\nClient Connected: LocalEndpoint={LocalEndpoint}, RemoteEndpoint={RemoteEndpoint}")]
-        public event EventHandler<BamProtocolServerEventArgs> TcpClientConnected;  
+                "Client Connected: LocalEndpoint={LocalEndpoint}, RemoteEndpoint={RemoteEndpoint}")]
+        public event EventHandler<BamProtocolServerEventArgs> TcpClientConnected;
+
+        public event EventHandler<BamProtocolServerEventArgs> UdpDataReceived; 
 
         public event EventHandler<BamProtocolServerEventArgs> CreateContextStarted;
         public event EventHandler<BamProtocolServerEventArgs> CreateContextComplete; 
@@ -126,6 +152,13 @@ namespace Bam.Protocol.Server
         public event EventHandler<BamProtocolServerEventArgs> CreateResponseStarted;
         public event EventHandler<BamProtocolServerEventArgs> CreateResponseComplete;
 
+        public BamProtocolServerInfo GetInfo()
+        {
+            BamProtocolServerInfo info = new BamProtocolServerInfo();
+            info.CopyProperties(this);
+            return info;
+        }
+        
         public void Dispose()
         {
             Stop();
@@ -133,6 +166,7 @@ namespace Bam.Protocol.Server
 
         public void Stop()
         {
+            FireEvent(Stopping);
             _stopRequested = true;
             TcpListener.Stop();
             FireEvent(Stopped);
@@ -145,7 +179,10 @@ namespace Bam.Protocol.Server
                 FireEvent(Starting);
                 try
                 {
-                    Task.Run(StartTcpListener);                    
+                    TcpListener = new TcpListener(TcpIPAddress, TcpPort);
+                    TcpListener.Start();
+                    Task.Run(HandleTcpRequests);
+                    Task.Run(HandleUdpRequests);
                 }
                 catch (Exception ex)
                 {
@@ -165,19 +202,20 @@ namespace Bam.Protocol.Server
         protected UdpClient UdpClient { get; set; }
         protected ILogger Logger { get; set; }
 
-        protected virtual void StartUdpListener()
+        protected virtual void HandleUdpRequests()
         {
             UdpClient = new UdpClient(UdpPort);
-            IPEndPoint groupEndpoint = new IPEndPoint(IPAddress.Any, UdpPort);
+            IPEndPoint groupEndpoint = new IPEndPoint(UdpIPAddress, UdpPort);
             while (UdpClient != null && !_stopRequested)
             {
                 byte[] data = UdpClient.Receive(ref groupEndpoint);
                 Task.Run(() =>
                 {
+                    string requestId = Cuid.Generate();
                     MemoryStream stream = new MemoryStream(data);
                     FireEvent(CreateContextStarted, new BamProtocolServerEventArgs());
                         
-                    IBamContext context = ContextProvider.CreateContext(stream);
+                    IBamContext context = ContextProvider.CreateContext(stream, requestId);
                     context.RequestProtocol = NetworkProtocols.Udp;
                     FireEvent(ResolveUserStarted, new BamProtocolServerEventArgs(context));
                     context.User = UserResolver.ResolveUser(context.BamRequest);
@@ -197,10 +235,8 @@ namespace Bam.Protocol.Server
             }
         }
         
-        protected virtual void StartTcpListener()
+        protected virtual void HandleTcpRequests()
         {
-            TcpListener = new TcpListener(IPAddress.Any, TcpPort);
-            TcpListener.Start();
             while (TcpListener != null && !_stopRequested)
             {
                 TcpClient client = TcpListener.AcceptTcpClient();
@@ -211,7 +247,7 @@ namespace Bam.Protocol.Server
                     {
                         FireEvent(TcpClientConnected, new BamProtocolServerEventArgs(client));
                         Logger.Info("Tcp Client Connected (CorrelationId={0}): LocalEndpoint={1}, RemoteEndpoint={2}", requestId, client.Client.LocalEndPoint.ToString(), client.Client.RemoteEndPoint.ToString());
-                        ParseTcpRequest(client);
+                        HandleTcpRequest(client, requestId);
                     }
                     catch (Exception ex)
                     {
@@ -221,7 +257,7 @@ namespace Bam.Protocol.Server
             }
         }
 
-        protected internal virtual void ParseTcpRequest(TcpClient client)
+        protected internal virtual void HandleTcpRequest(TcpClient client, string requestId)
         {
             int retryCount = 3;
             while (client.Connected)
@@ -233,7 +269,7 @@ namespace Bam.Protocol.Server
                         NetworkStream stream = client.GetStream();
                         FireEvent(CreateContextStarted, new BamProtocolServerEventArgs(client));
                         
-                        IBamContext context = ContextProvider.CreateContext(stream);
+                        IBamContext context = ContextProvider.CreateContext(stream, requestId);
                         context.RequestProtocol = NetworkProtocols.Tcp;
                         FireEvent(ResolveUserStarted, new BamProtocolServerEventArgs(client, context));
                         context.User = UserResolver.ResolveUser(context.BamRequest);
@@ -247,7 +283,6 @@ namespace Bam.Protocol.Server
                         FireEvent(CreateResponseStarted, new BamProtocolServerEventArgs(client, context));
                         context.BamResponse = ResponseProvider.CreateResponse(context);
                         FireEvent(CreateResponseComplete, new BamProtocolServerEventArgs(client, context));
-                        
                         FireEvent(CreateContextComplete, new BamProtocolServerEventArgs(client, context));
                     }
                 }
@@ -260,8 +295,6 @@ namespace Bam.Protocol.Server
                 }
             }            
         }
-
-
 
         public void Configure(IConfigurer configurer)
         {

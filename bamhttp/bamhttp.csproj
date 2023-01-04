@@ -23,8 +23,4 @@
     <ProjectReference Include="..\submodules\bam.core\bam.core\bam.core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Client\" />
-  </ItemGroup>
-
 </Project>

@@ -1,6 +1,8 @@
+using System.Net;
 using Bam.Net;
 using Bam.Net.CommandLine;
 using Bam.Protocol;
+using Bam.Protocol.Server;
 
 namespace Bam.CommandlineOptions;
 
@@ -9,9 +11,10 @@ public class Experimental : CommandLineTool
     [ConsoleAction]
     public void Run()
     {
+        BamProtocolServerBuilder builder = new BamProtocolServerBuilder();
         /*BamProtocolServer bamProtocolServer = new BamProtocolServer();
-        HttpClient client = new HttpClient();
+        BamClient client = new BamClient()
         HttpRequestMessage requestMessage = new HttpRequestMessage();
-        requestMessage.Headers.Set*/
+        requestMessage.Headers.Set#1#*/
     }
 }
