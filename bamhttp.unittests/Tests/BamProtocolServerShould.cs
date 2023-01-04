@@ -13,7 +13,7 @@ public class BamProtocolServerShould
         bool? startedEventRaised = false;
         bool? stoppingEventRaised = false;
         bool? stoppedEventRaised = false;
-        BamProtocolServer server = new BamProtocolServerBuilder()
+        BamServer server = new BamProtocolServerBuilder()
             .OnStarting((sender, args) => startingEventRaised = true)
             .OnStarted((sender, args) => startedEventRaised = true)
             .OnStopping((sender, args) => stoppingEventRaised = true)

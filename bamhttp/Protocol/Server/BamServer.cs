@@ -16,16 +16,16 @@ using Google.Protobuf.WellKnownTypes;
 
 namespace Bam.Protocol.Server
 {
-    public class BamProtocolServer: Loggable, IConfigurable, IDisposable
+    public class BamServer: Loggable, IConfigurable, IDisposable
     {
         private bool _stopRequested;
         public const int DefaultTcpPort = 8413;
         public const int DefaultUdpPort = 8414;
-        public BamProtocolServer() : this(new BamProtocolServerOptions())
+        public BamServer() : this(new BamProtocolServerOptions())
         {
         }
 
-        public BamProtocolServer(BamProtocolServerOptions options)
+        public BamServer(BamProtocolServerOptions options)
         {
             Logger = options.Logger;
             TcpPort = options.TcpPort;

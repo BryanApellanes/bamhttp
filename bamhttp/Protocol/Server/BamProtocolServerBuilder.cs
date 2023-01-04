@@ -92,97 +92,97 @@ public class BamProtocolServerBuilder
 
     public BamProtocolServerBuilder OnStarting(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._serverEventHandlers.StartingHandlers.Add(new BamEventListener(nameof(BamProtocolServer.Starting), handler));
+        this._serverEventHandlers.StartingHandlers.Add(new BamEventListener(nameof(BamServer.Starting), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnStarted(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._serverEventHandlers.StartedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.Started), handler));
+        this._serverEventHandlers.StartedHandlers.Add(new BamEventListener(nameof(BamServer.Started), handler));
         return this;
     }
 
     public BamProtocolServerBuilder OnTcpClientConnected(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._serverEventHandlers.TcpClientConnectedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.TcpClientConnected), handler));
+        this._serverEventHandlers.TcpClientConnectedHandlers.Add(new BamEventListener(nameof(BamServer.TcpClientConnected), handler));
         return this;
     }
 
     public BamProtocolServerBuilder OnUdpDataReceived(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._serverEventHandlers.UdpDataReceivedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.UdpDataReceived), handler));
+        this._serverEventHandlers.UdpDataReceivedHandlers.Add(new BamEventListener(nameof(BamServer.UdpDataReceived), handler));
         return this;
     }
 
     public BamProtocolServerBuilder OnStopping(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._serverEventHandlers.StoppingHandlers.Add(new BamEventListener(nameof(BamProtocolServer.Stopping), handler));
+        this._serverEventHandlers.StoppingHandlers.Add(new BamEventListener(nameof(BamServer.Stopping), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnStopped(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._serverEventHandlers.StoppedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.Stopped), handler));
+        this._serverEventHandlers.StoppedHandlers.Add(new BamEventListener(nameof(BamServer.Stopped), handler));
         return this;
     }
 
     public BamProtocolServerBuilder OnCreateContextStarted(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.CreateContextStartedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.CreateContextStarted), handler));
+        this._requestEventHandlers.CreateContextStartedHandlers.Add(new BamEventListener(nameof(BamServer.CreateContextStarted), handler));
         return this;
     }
 
     public BamProtocolServerBuilder OnCreateContextComplete(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.CreateContextCompleteHandlers.Add(new BamEventListener(nameof(BamProtocolServer.CreateContextComplete), handler));
+        this._requestEventHandlers.CreateContextCompleteHandlers.Add(new BamEventListener(nameof(BamServer.CreateContextComplete), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnResolveUserStarted(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.ResolveUserStartedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.ResolveUserStarted), handler));
+        this._requestEventHandlers.ResolveUserStartedHandlers.Add(new BamEventListener(nameof(BamServer.ResolveUserStarted), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnResolveUserComplete(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.ResolveUserCompleteHandlers.Add(new BamEventListener(nameof(BamProtocolServer.ResolveUserComplete), handler));
+        this._requestEventHandlers.ResolveUserCompleteHandlers.Add(new BamEventListener(nameof(BamServer.ResolveUserComplete), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnAuthorizeRequestStarted(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.AuthorizeRequestStartedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.AuthorizeRequestStarted), handler));
+        this._requestEventHandlers.AuthorizeRequestStartedHandlers.Add(new BamEventListener(nameof(BamServer.AuthorizeRequestStarted), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnAuthorizeRequestComplete(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.AuthorizeRequestCompleteHandlers.Add(new BamEventListener(nameof(BamProtocolServer.AuthorizeRequestComplete), handler));
+        this._requestEventHandlers.AuthorizeRequestCompleteHandlers.Add(new BamEventListener(nameof(BamServer.AuthorizeRequestComplete), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnResolveSessionStateStarted(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.ResolveSessionStateStartedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.ResolveSessionStateStarted), handler));
+        this._requestEventHandlers.ResolveSessionStateStartedHandlers.Add(new BamEventListener(nameof(BamServer.ResolveSessionStateStarted), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnResolveSessionStateComplete(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.ResolveSessionStateCompleteHandlers.Add(new BamEventListener(nameof(BamProtocolServer.ResolveSessionStateComplete), handler));
+        this._requestEventHandlers.ResolveSessionStateCompleteHandlers.Add(new BamEventListener(nameof(BamServer.ResolveSessionStateComplete), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnCreateResponseStarted(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.CreateResponseStartedHandlers.Add(new BamEventListener(nameof(BamProtocolServer.CreateResponseStarted), handler));
+        this._requestEventHandlers.CreateResponseStartedHandlers.Add(new BamEventListener(nameof(BamServer.CreateResponseStarted), handler));
         return this;
     }
     
     public BamProtocolServerBuilder OnCreateResponseComplete(EventHandler<BamProtocolServerEventArgs> handler)
     {
-        this._requestEventHandlers.CreateResponseCompleteHandlers.Add(new BamEventListener(nameof(BamProtocolServer.CreateResponseComplete), handler));
+        this._requestEventHandlers.CreateResponseCompleteHandlers.Add(new BamEventListener(nameof(BamServer.CreateResponseComplete), handler));
         return this;
     }
     
@@ -191,11 +191,11 @@ public class BamProtocolServerBuilder
         return _applicationServiceRegistry.For<I>();
     }
 
-    public BamProtocolServer Build()
+    public BamServer Build()
     {
         _options.ComponentRegistry = _applicationServiceRegistry;
         _options.ServerEventHandlers = _serverEventHandlers;
         _options.RequestEventHandlers = _requestEventHandlers;
-        return new BamProtocolServer(_options);
+        return new BamServer(_options);
     }
 }

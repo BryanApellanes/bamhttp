@@ -24,7 +24,7 @@ public class BamServerEventHandlers
         StartedHandlers.Count > 0 || StartedHandlers.Count > 0 || StoppingHandlers.Count > 0 ||
         StoppedHandlers.Count > 0 || TcpClientConnectedHandlers.Count > 0 || UdpDataReceivedHandlers.Count > 0;
 
-    internal void ListenTo(BamProtocolServer server)
+    internal void ListenTo(BamServer server)
     {
         List<BamEventListener> allEventHandlers = new List<BamEventListener>();
         allEventHandlers.AddRange(StartingHandlers);

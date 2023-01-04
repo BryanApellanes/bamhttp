@@ -12,9 +12,9 @@ public class BamProtocolServerOptions
     public BamProtocolServerOptions()
     {
         this.Logger = Log.Default;
-        this.TcpPort = BamProtocolServer.DefaultTcpPort;
+        this.TcpPort = BamServer.DefaultTcpPort;
         this.TcpIPAddress = IPAddress.Any;
-        this.UdpPort = BamProtocolServer.DefaultUdpPort;
+        this.UdpPort = BamServer.DefaultUdpPort;
         this.UdpIPAddress = IPAddress.Any;
         this.Name = 6.RandomLetters();
         this.HostBindings = new List<HostBinding>();
@@ -25,9 +25,9 @@ public class BamProtocolServerOptions
     public BamProtocolServerOptions(ApplicationServiceRegistry componentRegistry)
     {
         this.Logger = Log.Default;
-        this.TcpPort = BamProtocolServer.DefaultTcpPort;
+        this.TcpPort = BamServer.DefaultTcpPort;
         this.TcpIPAddress = IPAddress.Any;
-        this.UdpPort = BamProtocolServer.DefaultUdpPort;
+        this.UdpPort = BamServer.DefaultUdpPort;
         this.UdpIPAddress = IPAddress.Any;
         this.Name = 6.RandomLetters();
         this.HostBindings = new List<HostBinding>();
@@ -61,7 +61,7 @@ public class BamProtocolServerOptions
             .For<IBamRequestProcessor>().Use<BamRequestProcessor>();
     }
 
-    internal void SubscribeEventHandlers(BamProtocolServer server)
+    internal void SubscribeEventHandlers(BamServer server)
     {
         if (ServerEventHandlers.HasHandlers)
         {
@@ -74,12 +74,12 @@ public class BamProtocolServerOptions
         }
     }
 
-    internal void SubscribeServerEventHandlers(BamProtocolServer server)
+    internal void SubscribeServerEventHandlers(BamServer server)
     {
         ServerEventHandlers.ListenTo(server);
     }
 
-    internal void SubscribeRequestEventHandlers(BamProtocolServer server)
+    internal void SubscribeRequestEventHandlers(BamServer server)
     {
         RequestEventHandlers.ListenTo(server);
     }

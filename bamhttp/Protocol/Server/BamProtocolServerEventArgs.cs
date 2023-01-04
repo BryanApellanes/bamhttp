@@ -21,7 +21,7 @@ public class BamProtocolServerEventArgs : EventArgs
         this.Context = context;
     }
 
-    public BamProtocolServer Server { get; set; }
+    public BamServer Server { get; set; }
     public IBamContext Context { get; internal set; }
     public string LocalEndpoint { get; private set; }
     public string RemoteEndpoint { get; private set; }

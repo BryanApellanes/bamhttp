@@ -9,7 +9,7 @@ public class BamProtocolServerBuilderShould
     [UnitTest]
     public void BuildServer()
     {
-        BamProtocolServer server = new BamProtocolServerBuilder().Build();
+        BamServer server = new BamProtocolServerBuilder().Build();
         server.ShouldNotBeNull();
     }
 }

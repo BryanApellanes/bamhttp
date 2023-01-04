@@ -7,7 +7,7 @@ namespace Bam.Protocol.Client;
 
 public class BamClient : IBamClient
 {
-    public static string DefaultHttpBaseAddress = $"bam://localhost:{BamProtocolServer.DefaultTcpPort}";
+    public static string DefaultHttpBaseAddress = $"bam://localhost:{BamServer.DefaultTcpPort}";
     public BamClient()
     {
         this.HttpClient = new HttpClient();

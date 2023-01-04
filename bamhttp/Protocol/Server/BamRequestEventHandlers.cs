@@ -40,7 +40,7 @@ public class BamRequestEventHandlers
         CreateResponseStartedHandlers.Count > 0 ||
         CreateResponseCompleteHandlers.Count > 0;
 
-    internal void ListenTo(BamProtocolServer server)
+    internal void ListenTo(BamServer server)
     {
         List<BamEventListener> allEventListeners = new List<BamEventListener>();
         allEventListeners.AddRange(CreateContextStartedHandlers);
