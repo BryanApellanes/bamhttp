@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\bamhttp\bamhttp.csproj" />
+      <ProjectReference Include="..\bamserver\bamserver.csproj" />
     </ItemGroup>
 
 </Project>
