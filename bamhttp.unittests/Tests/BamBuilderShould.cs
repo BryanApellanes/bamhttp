@@ -6,7 +6,7 @@ using System.Net;
 
 namespace Bam.Protocol.Tests;
 
-public class BamProtocolBuilderShould
+public class BamBuilderShould
 {
     [UnitTest]
     public void BuildBamProtocolServer()
@@ -21,18 +21,18 @@ public class BamProtocolBuilderShould
         BamServer server = new BamServerBuilder()
             .TcpPort(testTcpPort)
             .UdpPort(testUdpPort)
-            .Name(serverName)
+            .ServerName(serverName)
             .TcpIPAddress(tcpIpAddress)
             .UdpIPAddress(udpIpAddress)
             .HostBindings(new HostBinding(testHost1), new HostBinding(testHost2))
             .Build();
 
         BamServerInfo info = server.GetInfo();
-        info.Name.ShouldBeEqualTo(serverName);
+        info.ServerName.ShouldBeEqualTo(serverName);
         info.TcpPort.ShouldBeEqualTo(testTcpPort);
         info.UdpPort.ShouldBeEqualTo(testUdpPort);
-        info.TcpIPAddress.ShouldBeEqualTo(IPAddress.Parse(tcpIpAddress));
-        info.UdpIPAddress.ShouldBeEqualTo(IPAddress.Parse(udpIpAddress));
+        info.TcpIPAddress.ShouldBeEqualTo(IPAddress.Parse(tcpIpAddress).ToString());
+        info.UdpIPAddress.ShouldBeEqualTo(IPAddress.Parse(udpIpAddress).ToString());
         List<int> hostBindingPorts = info.HostBindings.Select(hb => hb.Port).ToList();
         hostBindingPorts.Count.ShouldBeEqualTo(2);
         hostBindingPorts.Each(port => port.ShouldBeEqualTo(testTcpPort));

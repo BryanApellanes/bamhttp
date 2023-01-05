@@ -30,7 +30,7 @@ namespace Bam.Protocol.Server
             Logger = options.Logger;
             TcpPort = options.TcpPort;
             UdpPort = options.UdpPort;
-            Name = options.Name;
+            ServerName = options.ServerName;
             HostBindings = new HashSet<HostBinding>(options.HostBindings.Select(hb=> new HostBinding(hb.HostName, TcpPort)));
             Options = options;
             Started += (o, a) => Subscribe(Logger);
@@ -65,19 +65,9 @@ namespace Bam.Protocol.Server
         /// <summary>
         /// Gets or sets the name of this server to aide in identifying the process in logs.
         /// </summary>
-        public string Name { get; set; }
+        public string ServerName { get; set; }
 
         public HashSet<HostBinding> HostBindings { get; }
-        
-        /// <summary>
-        /// Gets or sets the size of the buffer to use when parsing requests.  This value
-        /// determines the size of the read buffers when reading requests.
-        /// </summary>
-        public int BufferSize
-        {
-            get;
-            set;
-        }
         
         public int TcpPort
         {
@@ -156,6 +146,8 @@ namespace Bam.Protocol.Server
         {
             BamServerInfo info = new BamServerInfo();
             info.CopyProperties(this);
+            info.TcpIPAddress = TcpIPAddress.Equals(IPAddress.Any) ? "Any" : TcpIPAddress.ToString();
+            info.UdpIPAddress = UdpIPAddress.Equals(IPAddress.Any) ? "Any" : UdpIPAddress.ToString();
             return info;
         }
         
@@ -202,7 +194,7 @@ namespace Bam.Protocol.Server
         protected UdpClient UdpClient { get; set; }
         protected ILogger Logger { get; set; }
 
-        protected virtual void HandleUdpRequests()
+        protected void HandleUdpRequests()
         {
             UdpClient = new UdpClient(UdpPort);
             IPEndPoint groupEndpoint = new IPEndPoint(UdpIPAddress, UdpPort);
@@ -251,7 +243,7 @@ namespace Bam.Protocol.Server
                     }
                     catch (Exception ex)
                     {
-                        Logger.AddEntry("Error parsing tcp request (CorrelationId={1}): {0}", ex, requestId, ex.Message);
+                        Logger.AddEntry("Error parsing tcp request (CorrelationId={0}): {1}", ex, requestId, ex.Message);
                     }
                 });
             }

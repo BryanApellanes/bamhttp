@@ -3,6 +3,6 @@
     public interface IBamClient
     {
          string BaseAddress { get; set; }
-         IBamClientResponse SendRequest(IBamClientRequest request);
+         IBamClientResponse ReceiveResponse(IBamClientRequest request);
     }
 }

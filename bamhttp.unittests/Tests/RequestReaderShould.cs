@@ -16,7 +16,7 @@ public class RequestReaderShould
         string multiLineValue = $@"{firstLine}
 {secondLine}";
         stream.Write(Encoding.ASCII.GetBytes(multiLineValue), 0, multiLineValue.Length);
-        TestBamRequestReader reader = new TestBamRequestReader();
+        TestBamRequestReader reader = new TestBamRequestReader(new BamRequestReaderOptions(new BamServerOptions()));
         stream.Seek(0, SeekOrigin.Begin);
         string line = reader.ReadStringLineAccessor(stream);
         
@@ -36,7 +36,7 @@ X-Bam-Test: another header value
 ";
         MemoryStream stream = new MemoryStream(Encoding.ASCII.GetBytes(requestStream));
 
-        TestBamRequestReader reader = new TestBamRequestReader();
+        TestBamRequestReader reader = new TestBamRequestReader(new BamRequestReaderOptions(new BamServerOptions()));
         IBamRequest bamRequest = reader.ReadRequest(stream);
         
         bamRequest.Content.ShouldBeEqualTo(requestBody);

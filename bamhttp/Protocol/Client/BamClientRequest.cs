@@ -24,6 +24,12 @@ public class BamClientRequest : IBamClientRequest
     public string ProtocolVersion { get; set; }
     public string Protocol { get; set; }
     public string Content { get; set; }
+
+    public Uri GetUrl(IBamClient client)
+    {
+        return GetUrl((client.BaseAddress));
+    }
+    
     public Uri GetUrl(string baseAddress)
     {
         throw new NotImplementedException();

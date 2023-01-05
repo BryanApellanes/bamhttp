@@ -66,14 +66,15 @@ public class BamServerBuilder
         return this;
     }
 
-    public BamServerBuilder Name(string name)
+    public BamServerBuilder ServerName(string name)
     {
-        _options.Name = name;
+        _options.ServerName = name;
         return this;
     }
 
     public BamServerBuilder HostBindings(params HostBinding[] hostBindings)
     {
+        _options.HostBindings.Clear();
         _options.HostBindings.AddRange(hostBindings.Select(hb => new BamHostBinding(this, hb)));
         return this;
     }
@@ -84,6 +85,12 @@ public class BamServerBuilder
         return this;
     }
 
+    public BamServerBuilder UseNameBasedPort()
+    {
+        _options.UseNameBasedPort = true;
+        return this;
+    }
+    
     public BamServerBuilder Use<I, T>(T instance)
     {
         For<I>().Use(instance);

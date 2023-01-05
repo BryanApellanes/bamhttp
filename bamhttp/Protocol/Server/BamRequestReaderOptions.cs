@@ -2,12 +2,12 @@ namespace Bam.Protocol.Server;
 
 public class BamRequestReaderOptions
 {
-    public BamRequestReaderOptions()
+    public BamRequestReaderOptions(BamServerOptions serverOptions)
     {
-        this.BufferSize = 5000;
+        this.RequestBufferSize = serverOptions.RequestBufferSize;
     }
     
-    public int BufferSize { get; set; }
+    public int RequestBufferSize { get; set; }
     
     /// <summary>
     /// Gets or sets the event handler that is subscribed to all the events of a `RequestReader`.

@@ -4,7 +4,7 @@ using Bam.Protocol.Server;
 
 namespace Bam.Protocol.Tests;
 
-public class BamProtocolServerBuilderShould
+public class BamServerBuilderShould
 {
     [UnitTest]
     public void BuildServer()

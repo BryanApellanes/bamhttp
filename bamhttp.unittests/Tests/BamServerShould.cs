@@ -4,7 +4,7 @@ using Bam.Protocol.Server;
 
 namespace Bam.Protocol.Tests;
 
-public class BamProtocolServerShould
+public class BamServerShould
 {
     [UnitTest]
     public void FireServerStartAndStopEvents()

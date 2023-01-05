@@ -5,11 +5,6 @@ namespace Bam.Protocol.Server;
 
 public class BamRequestReader : IBamRequestReader
 {
-    public BamRequestReader()
-    {
-        this.Options = new BamRequestReaderOptions();
-    }
-
     public BamRequestReader(BamRequestReaderOptions options)
     {
         this.Options = options;
@@ -17,7 +12,7 @@ public class BamRequestReader : IBamRequestReader
     
     protected BamRequestReaderOptions Options { get; set; }
 
-    public int BufferSize => Options.BufferSize;
+    public int BufferSize => Options.RequestBufferSize;
 
     public virtual IBamRequest ReadRequest(Stream stream)
     {

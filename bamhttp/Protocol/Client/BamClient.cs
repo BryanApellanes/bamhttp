@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using Bam.Net;
 using Bam.Net.Web;
 using Bam.Net.Server;
@@ -8,6 +9,7 @@ namespace Bam.Protocol.Client;
 public class BamClient : IBamClient
 {
     public static string DefaultHttpBaseAddress = $"bam://localhost:{BamServer.DefaultTcpPort}";
+    
     public BamClient()
     {
         this.HttpClient = new HttpClient();
@@ -43,12 +45,24 @@ public class BamClient : IBamClient
         };
     }
 
-    private HttpClient HttpClient
+    private HttpClient HttpClient // content
     {
         get; 
         set;
     }
 
+    private TcpClient TcpClient // rpc
+    {
+        get;
+        set;
+    }
+    
+    private Socket UdpSocket // data broadcast
+    {
+        get;
+        set;
+    }
+    
     private Dictionary<HttpMethods, HttpMethod> HttpMethods
     {
         get;
@@ -56,7 +70,8 @@ public class BamClient : IBamClient
     }
 
     public string BaseAddress { get; set; }
-    public IBamClientResponse SendRequest(IBamClientRequest request)
+    
+    public IBamClientResponse ReceiveResponse(IBamClientRequest request)
     {
         throw new NotImplementedException();
     }
