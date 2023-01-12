@@ -3,17 +3,21 @@ using Bam.Protocol.Server;
 
 namespace Bam.Protocol.Client;
 
-public class HttpClientRequest : IBamClientRequest
+public class UdpClientRequest : IBamClientRequest
 {
-    public HttpClientRequest()
+    public UdpClientRequest(string content)
     {
-        Protocol = "HTTP";
-        ProtocolVersion = "1.1";
-        HttpMethod = HttpMethods.GET;
+        Protocol = "BAM";
+        ProtocolVersion = "2.0";
+        HttpMethod = HttpMethods.PUT;
+        Content = content;
     }
 
-    public HttpClientRequest(string content) : this()
+    public UdpClientRequest(object content)
     {
+        Protocol = "BAM";
+        ProtocolVersion = "2.0";
+        HttpMethod = HttpMethods.PUT;
         Content = content;
     }
 
@@ -23,7 +27,7 @@ public class HttpClientRequest : IBamClientRequest
     public HttpMethods HttpMethod { get; set; }
     public string ProtocolVersion { get; set; }
     public string Protocol { get; set; }
-    public string Content { get; set; }
+    public object Content { get; set; }
     public Uri GetUrl(string baseAddress)
     {
         throw new NotImplementedException();

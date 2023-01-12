@@ -11,7 +11,7 @@ public interface IBamClientRequest
     HttpMethods HttpMethod { get; set; }
     string ProtocolVersion { get; set; }
     string Protocol { get; set; }
-    string Content { get; set; }
+    object Content { get; set; }
 
     Uri GetUrl(string baseAddress);
 

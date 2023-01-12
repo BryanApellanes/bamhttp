@@ -1,17 +1,23 @@
+using Bam.Net.Server;
+
 namespace Bam.Protocol.Client;
 
 public abstract class BamClientRequestBuilder : IBamClientRequestBuilder
 {
-    private readonly BamClientRequestOptions _options;
+    protected readonly BamClientRequestOptions _options;
     public BamClientRequestBuilder()
     {
         this._options = new BamClientRequestOptions();
     }
     
-    
-    public IBamClientRequestBuilder Host(string host)
+    public IBamClientRequestBuilder BaseAddress(string host)
     {
-        _options.Host = host;
+        return BaseAddress(new HostBinding(host));
+    }
+
+    public IBamClientRequestBuilder BaseAddress(HostBinding hostBinding)
+    {
+        _options.Host = hostBinding;
         return this;
     }
 
@@ -39,7 +45,7 @@ public abstract class BamClientRequestBuilder : IBamClientRequestBuilder
         return this;
     }
 
-    public IBamClientRequestBuilder Content(string content)
+    public IBamClientRequestBuilder Content(object content)
     {
         _options.Content = content;
         return this;

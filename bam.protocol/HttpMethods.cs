@@ -1,9 +1,9 @@
 namespace Bam.Protocol;
 
 public enum HttpMethods
-{        
-    POST,
+{   
     GET,
+    POST,
     PUT,
     PATCH,
     DELETE,

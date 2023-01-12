@@ -19,6 +19,7 @@ namespace Bam.Protocol.Server
     public class BamServer: Loggable, IConfigurable, IDisposable
     {
         private bool _stopRequested;
+        public const int DefaultHttpPort = 443;
         public const int DefaultTcpPort = 8413;
         public const int DefaultUdpPort = 8414;
         public BamServer() : this(new BamServerOptions())

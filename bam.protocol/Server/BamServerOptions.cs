@@ -114,21 +114,12 @@ public class BamServerOptions
     }
     
     private IBamCommunicationHandler _communicationHandler;
-    public IBamCommunicationHandler GetCommunicationHandler(bool reinit = false)
+    public virtual IBamCommunicationHandler GetCommunicationHandler(bool reinit = false)
     {
         if (_communicationHandler == null || reinit)
         {
-            BamCommunicationHandler bamCommunicationHandler = new BamCommunicationHandler
-            {
-                TcpIPAddressProvider =  ComponentRegistry.Get<ITcpIPAddressProvider>(new BamTcpIPAddressProvider(TcpIPAddress)),
-                UdpIPAddressProvider = ComponentRegistry.Get<IUdpIPAddressProvider>(new BamUdpIPAddressProvider(UdpIPAddress)),
-                ResponseProvider = ComponentRegistry.Get<IBamResponseProvider>(),
-                ContextProvider = ComponentRegistry.Get<IBamContextProvider>(),
-                UserResolver = ComponentRegistry.Get<IBamUserResolver>(),
-                SessionStateProvider = ComponentRegistry.Get<IBamSessionStateProvider>(),
-                AuthorizationCalculator =  ComponentRegistry.Get<IBamAuthorizationCalculator>(),
-                RequestProcessor = ComponentRegistry.Get<IBamRequestProcessor>()
-            };
+            BamCommunicationHandler bamCommunicationHandler = new BamCommunicationHandler();
+            bamCommunicationHandler.Initialize(ComponentRegistry);
             _communicationHandler = bamCommunicationHandler;
         }
 

@@ -20,7 +20,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\bam.protocol\bam.protocol.csproj" />
     <ProjectReference Include="..\submodules\bam.core\bam.core\bam.core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Protocol" />
   </ItemGroup>
 
 </Project>

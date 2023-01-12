@@ -6,8 +6,15 @@ using System.Net;
 
 namespace Bam.Protocol.Tests;
 
-public class BamBuilderShould
-{
+public class BamServerBuilderShould
+{    
+    [UnitTest]
+    public void BuildServer()
+    {
+        BamServer server = new BamServerBuilder().Build();
+        server.ShouldNotBeNull();
+    }
+    
     [UnitTest]
     public void BuildBamProtocolServer()
     {
